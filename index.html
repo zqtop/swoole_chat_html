@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" href="css/list.css" type="text/css" />
+		<title></title>
+	</head>
+	<body>
+		<h1>好友列表</h1>
+		<ul id="ul">
+			
+		</ul>
+	</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="config/config.js"></script>
+<script src="layer/layer.js"></script>
+<script>
+		
+		var $token = localStorage.getItem("token");
+		if (!$token) {
+			window.location.href="login.html";
+		}
+			
+	   var $url = global.website+"?s=/api/user/findAll";
+			$(function(){
+				
+				$.ajax({
+					url:$url,
+					type:"post",
+					dataType:"json",
+					data:{"token":$token},
+					timeout:5000,
+					success:function($result){
+						console.log($result);
+						if ($result.code == 200) {
+							//登陆成功
+							$data = $result.data;
+							var html = "";
+							for(var index in $data){
+								var item = $data[index];
+								html+="<li data_id='"+item.id+"'>";
+								html+="<div class='img_box'>"
+								html+="<img src='"+item.avatar+"'/>";		
+								html+="</div>";
+								html+="<div class='img_nickname'>"+item.nickname+"</div>";
+								html+="</li>";
+							}
+							console.log(html);
+						$('#ul').empty().append(html);
+						$('#ul').find('li').each(function() {
+						        $(this).click(function() {
+						           var $data_id = $(this).attr("data_id");
+								   window.location.href="chat.html?data_id="+$data_id;
+								   localStorage.setItem("data_id",$data_id);
+						        })
+						    })
+						} else if($result.code == 40003){
+							localStorage.removeItem("token");
+					        window.location.href="login.html";
+				     }else {
+						layer.msg($result.msg);
+				       }
+						
+					},
+					error:function($err){
+					   layer.msg("服务内部报错");
+					   
+					}
+				});
+			});
+			
+		
+</script>

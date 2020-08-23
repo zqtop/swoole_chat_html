@@ -1,0 +1,106 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body{
+	background: #eee;
+}
+#body {
+	
+	margin-top: 4%;
+}
+h1 {
+	text-align: center;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 3rem;
+	background: #eee;
+}
+ul {
+	list-style: none;
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+	overflow-y:scroll;
+	SCROLLBAR-FACE-COLOR:#205e17;
+	baiSCROLLBAR-SHADOW-COLOR:#86ff92;
+	SCROLLBAR-SHADOW-COLOR:#86ff92;
+	SCROLLBAR-3DLIGHT-COLOR:#205e17;
+	SCROLLBAR-TRACK-COLOR:#205e17;
+	SCROLLBAR-DARKSHADOW-COLOR:#205e17;
+	SCROLLBAR-BASE-COLOR:#205e17;
+	SCROLLBAR-ARROW-COLOR:#86ff92;
+}
+
+li {
+	width: 100%;
+	height: 40px;
+	margin-top: 2rem;
+
+}
+.answer_image_box {
+	width: 50px;
+	height: 50px;
+    border-radius: 12rem;
+	overflow: hidden;
+	float: left;
+}
+.answer_content {
+	width:auto;
+	height: 50px;
+	line-height: 50px;
+	background: #98e165;
+	color: white;
+	float: left;
+}
+ul li img{
+	width: 50px;
+}
+
+
+.reply_image_box {
+	width: 50px;
+	height: 50px;
+    border-radius: 12rem;
+	overflow: hidden;
+	float: right;
+}
+.replay_content {
+	width:auto;
+	height: 50px;
+	line-height: 50px;
+	background: #fff;
+	color: #000;
+	float: right;
+}
+
+.send_box{
+	width: 100%;
+    height: 3rem;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	background: #f7f7f7;
+}
+.send_box input{
+	width:78%;
+	height:3rem;
+	outline: none;
+}
+ .btn{
+    color: white;;
+	background: #000000;
+	height: 3rem;
+	width: 17.6%;
+	border: none;
+	outline: none;
+}
+
+.message_box{
+	width: 100%;
+	height: auto;
+	margin-top: 20%;
+
+}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	   <meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" href="css/chat.css" type="text/css" />
+		<title>聊天</title>
+	</head>
+	<body>
+	<div id="body">
+		<h1 id="nickname">zq</h1>
+		<div class="message_box">
+			<ul id="ul"></ul>
+			
+		</div>
+		<div   id="msg_end" style="height:3rem; overflow:hidden"></div>
+		<div class="send_box">
+			<input type="text" name="message"  id="text" autocomplete="off"/>
+			<button class="btn" onclick="send()">发送</button>
+		</div>
+	</body>
+</html>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="config/config.js"></script>
+<script src="layer/layer.js"></script>
+<script>
+	var user_info = {
+		"friend_avatar":global.website+"/image/default.png"
+	};
+	var $token = localStorage.getItem("token");
+	if (!$token) {
+		window.location.href="login.html";
+	}
+	//连接websocket
+	ws = start();
+
+	
+	function getFriendUserInfo($serv)
+	{
+		
+		var $url = global.website+"?s=/api/user/get_friend_user_info";
+		var $data_id = localStorage.getItem("data_id");
+		$.ajax({
+			url:$url,
+			type:"post",
+			dataType:"json",
+			data:{"token":$token,"data_id":$data_id},
+			timeout:5000,
+			success:function($result){
+				console.log($result);
+				if ($result.code == 200) {
+					//登陆成功
+					user_info = $result.data;
+					$('#nickname').empty().text($result.data.friend_nickname);
+					//发送用户id 和聊天对象的id
+					$json = {};
+					$json.user_id = $result.data.user_id;
+					$json.friend_user_id = $result.data.friend_user_id;
+					$json.data="";
+					var content = JSON.stringify($json);
+					$serv.send(content);
+				} else if($result.code == 40003){
+					localStorage.removeItem("token");
+					window.location.href="login.html";
+					
+				}else {
+						layer.msg($result.msg);
+				}
+				
+			},
+			error:function($err){
+			   layer.msg("服务内部报错");
+			   
+			}
+		});
+	}
+	
+	$("#text").bind("keydown",function(e){
+	　　// 兼容FF和IE和Opera
+	　　var theEvent = e || window.event;
+	　　var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+	　　 if (code == 13) {
+	　　//回车执行查询
+	　　    send();
+	　　}
+	});
+	
+	  
+	function start() {
+		  if ("WebSocket" in window) {
+		     // 打开一个 web socket
+		     var ws = new WebSocket("ws://192.168.169.138");
+		      
+		     ws.onopen = function() {
+		        // Web Socket 已连接上，使用 send() 方法发送数据
+				getFriendUserInfo(ws);//获取用户信息
+		        console.log("链接上webscoket server ...");
+		     };
+		      
+		     ws.onmessage = function (evt) 
+		     { 
+		        var received_msg = evt.data;
+				
+				//组装数据
+				var html = "";
+				
+				html +="<li class='li'>";
+	            html+="<div class='answer_image_box'>";
+				html+="<img src='"+user_info.friend_avatar+"'/>"
+				html+="</div>";
+				html+="<div class='answer_content'>";
+			    html+= received_msg;
+				html+="</div>";
+				html+= "</li>";
+				$('#ul').append(html);
+				msg_end.scrollIntoView(); 
+		        console.log("数据已接收..."+received_msg);
+		     };
+		      
+		     ws.onclose = function()
+		     { 
+		        // 关闭 websocket
+		        console.log("连接已关闭..."); 
+		     };
+		  } else {
+		     // 浏览器不支持 WebSocket
+		     layer.msg("您的浏览器不支持 WebSocket!");
+		  }
+		  return ws;
+	}
+	
+	//发送消息
+	function send(){
+		
+		 var text=$("#text").val();
+		 if (!text) {
+			 return layer.msg("不能发送空白消息");
+		 }
+		 var html = "";
+		    html+="<li class='li'>";
+			html+="<div class='reply_image_box'>";
+			html+="	<img src='"+user_info.avatar+"'/>"
+			html+="	</div>";
+		    html+="<div class='replay_content'>";
+			html+=text
+			html+="	</div>";
+			html+="</li>";
+			$('#ul').append(html);
+			//发送消息
+			$json = {};
+			$json.user_id = user_info.user_id;
+			$json.friend_user_id = user_info.friend_user_id;
+			$json.data=text;
+			var content = JSON.stringify($json);
+			//最新信息置于底部
+			msg_end.scrollIntoView(); 
+			ws.send(content);
+			$('#text').val("");
+	}
+	
+</script>

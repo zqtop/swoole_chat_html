@@ -1,0 +1,41 @@
+*{
+	padding: 0px;
+	margin: 0px;
+}
+h1 {
+	text-align: center;
+
+}
+
+ul {
+	margin-top: 1rem;
+	list-style: none;
+}
+ul li {
+	width: 100%;
+	height: 20px;
+	height: 50px;
+	margin-top: 10px;
+	border:1px solid #CECECE;
+}
+ul li:hover{
+	background: #CECECE;
+}
+.img_box {
+	width:50px;
+	height: 50px;
+	border-radius: 25px;
+	overflow: hidden;
+}
+.img_nickname {
+	width: 80%;
+	height: 50px;
+	line-height: 50px;
+
+}
+.img_box, .img_nickname {
+	float: left;
+}
+.img_box img{
+	width: 50px;
+}
